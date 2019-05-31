@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aorun.answer.dao.QuestionRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.aorun.answer.model.QuestionRecord" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="question_bank_record_id" property="questionBankRecordId" jdbcType="BIGINT" />
+    <result column="question_id" property="questionId" jdbcType="BIGINT" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="is_right" property="isRight" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="worker_id" property="workerId" jdbcType="BIGINT" />
+    <result column="question_bank_id" property="questionBankId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, question_bank_record_id, question_id, answer, is_right, create_time, worker_id,
+    question_bank_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_question_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByWorkerQuestionid" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_question_record
+    where worker_id = #{workerId} and question_id = #{questionId} and question_bank_record_id = #{questionBankRecordId}
+    order by create_time desc
+    limit 1
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_question_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aorun.answer.model.QuestionRecord" useGeneratedKeys="true" keyProperty="id">
+    insert into t_question_record (question_bank_record_id, question_id,
+      answer, is_right, create_time,
+      worker_id, question_bank_id)
+    values (#{questionBankRecordId,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT},
+      #{answer,jdbcType=VARCHAR}, #{isRight,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{workerId,jdbcType=BIGINT}, #{questionBankId,jdbcType=BIGINT})
+  </insert>
+</mapper>

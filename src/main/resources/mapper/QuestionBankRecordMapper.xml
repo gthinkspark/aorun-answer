@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aorun.answer.dao.QuestionBankRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.aorun.answer.model.QuestionBankRecord" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="worker_id" property="workerId" jdbcType="BIGINT" />
+    <result column="question_bank_id" property="questionBankId" jdbcType="BIGINT" />
+    <result column="question_bank_type" property="questionBankType" jdbcType="INTEGER" />
+    <result column="total_time" property="totalTime" jdbcType="INTEGER" />
+    <result column="right_quantities" property="rightQuantities" jdbcType="INTEGER" />
+    <result column="epoint" property="epoint" jdbcType="INTEGER" />
+    <result column="accuracy" property="accuracy" jdbcType="VARCHAR" />
+    <result column="star" property="star" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="month" property="month" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, worker_id, question_bank_id, question_bank_type, total_time, right_quantities, 
+    epoint, accuracy, star, create_time, month
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_question_bank_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <!--<select id="getToDayMaxStarByType" resultType="java.lang.Integer" >-->
+    <!--select-->
+    <!--<![CDATA[-->
+         <!--MAX(star)-->
+      <!--]]>-->
+    <!--from t_question_bank_record-->
+    <!--where worker_id = #{workerId} and question_bank_type = #{questionBankType}-->
+    <!--<![CDATA[-->
+         <!--and TO_DAYS(NOW()) = TO_DAYS(create_time)-->
+      <!--]]>-->
+  <!--</select>-->
+
+  <!--<select id="getMaxStarByBankId" resultType="java.lang.Integer" >-->
+    <!--select-->
+    <!--<![CDATA[-->
+         <!--IFNULL(MAX(star),0)-->
+      <!--]]>-->
+    <!--from t_question_bank_record-->
+    <!--where worker_id = #{workerId} and question_bank_id = #{questionBankId}-->
+  <!--</select>-->
+  <insert id="insert" parameterType="com.aorun.answer.model.QuestionBankRecord" useGeneratedKeys="true" keyProperty="id">
+    insert into t_question_bank_record (worker_id, question_bank_id,
+      question_bank_type, total_time, right_quantities,
+      epoint, accuracy, star,
+      create_time, month)
+    values (#{workerId,jdbcType=BIGINT}, #{questionBankId,jdbcType=BIGINT},
+      #{questionBankType,jdbcType=INTEGER}, #{totalTime,jdbcType=INTEGER}, #{rightQuantities,jdbcType=INTEGER},
+      #{epoint,jdbcType=INTEGER}, #{accuracy,jdbcType=VARCHAR}, #{star,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{month,jdbcType=INTEGER})
+  </insert>
+
+  <select id="getMaxStarByMap" resultType="java.lang.Integer" >
+    select
+    <![CDATA[
+         IFNULL(MAX(star),0)
+      ]]>
+    from t_question_bank_record
+    <where>
+      <if test="workerId != null">
+        and worker_id = #{workerId}
+      </if>
+      <if test="questionBankId != null">
+        and question_bank_id = #{questionBankId}
+      </if>
+      <if test="questionBankType != null">
+        and question_bank_type = #{questionBankType}
+      </if>
+      <if test="startTime != null">
+        <![CDATA[
+           and create_time >= #{startTime}
+        ]]>
+      </if>
+      <if test="endTime != null">
+        <![CDATA[
+           and create_time <= #{endTime}
+        ]]>
+      </if>
+    </where>
+  </select>
+
+  <select id="getQuestionBankRecordByPage" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank_record
+    where worker_id = #{workerId}
+    order by create_time desc
+    limit #{start},#{limit}
+  </select>
+
+  <select id="getQuestionBankRecord" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank_record
+    where worker_id = #{workerId} and question_bank_type = #{questionBankType}
+    order by create_time desc
+  </select>
+
+  <select id="getRecordLastStar" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank_record
+    where worker_id = #{workerId} and question_bank_id = #{questionBankId} and star = #{star}
+    order by create_time desc
+    limit 1
+  </select>
+
+</mapper>

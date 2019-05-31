@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aorun.answer.dao.QuestionOptionMapper" >
+  <resultMap id="BaseResultMap" type="com.aorun.answer.model.QuestionOption" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="question_id" property="questionId" jdbcType="BIGINT" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, question_id, number, content, create_time, is_delete
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_question_option
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByQuestionId" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_option
+    where
+    is_delete='n' and question_id = #{questionId}
+    order by number asc
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_question_option
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aorun.answer.model.QuestionOption" >
+    insert into t_question_option (id, question_id, number, 
+      content, create_time, is_delete
+      )
+    values (#{id,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT}, #{number,jdbcType=INTEGER}, 
+      #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aorun.answer.model.QuestionOption" >
+    insert into t_question_option
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aorun.answer.model.QuestionOption" >
+    update t_question_option
+    <set >
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=CHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aorun.answer.model.QuestionOption" >
+    update t_question_option
+    set question_id = #{questionId,jdbcType=BIGINT},
+      number = #{number,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=CHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

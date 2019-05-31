@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aorun.answer.dao.QuestionMapper" >
+  <resultMap id="BaseResultMap" type="com.aorun.answer.model.Question" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="question_bank_id" property="questionBankId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="question_type" property="questionType" jdbcType="INTEGER" />
+    <result column="detail_type" property="detailType" jdbcType="INTEGER" />
+    <result column="answer_number" property="answerNumber" jdbcType="INTEGER" />
+    <result column="video_url" property="videoUrl" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="is_delete" property="isDelete" jdbcType="CHAR" />
+    <result column="question_answer" property="questionAnswer" jdbcType="VARCHAR" />
+    <result column="question_answer_option_id" property="questionAnswerOptionId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.aorun.answer.model.Question" extends="BaseResultMap" >
+    <result column="answer_keys" property="answerKeys" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, question_bank_id, title, source, question_type, detail_type, answer_number, video_url, 
+    create_time, is_delete, question_answer, question_answer_option_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    answer_keys
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_question
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <select id="selectByBankId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_question
+    where question_bank_id = #{questionBankId} and is_delete='n'
+  </select>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_question
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aorun.answer.model.Question" >
+    insert into t_question (id, question_bank_id, title, 
+      source, question_type, detail_type, 
+      answer_number, video_url, create_time, 
+      is_delete, question_answer, question_answer_option_id, 
+      answer_keys)
+    values (#{id,jdbcType=BIGINT}, #{questionBankId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, 
+      #{source,jdbcType=VARCHAR}, #{questionType,jdbcType=INTEGER}, #{detailType,jdbcType=INTEGER}, 
+      #{answerNumber,jdbcType=INTEGER}, #{videoUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{isDelete,jdbcType=CHAR}, #{questionAnswer,jdbcType=VARCHAR}, #{questionAnswerOptionId,jdbcType=VARCHAR}, 
+      #{answerKeys,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aorun.answer.model.Question" >
+    insert into t_question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="questionBankId != null" >
+        question_bank_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="questionType != null" >
+        question_type,
+      </if>
+      <if test="detailType != null" >
+        detail_type,
+      </if>
+      <if test="answerNumber != null" >
+        answer_number,
+      </if>
+      <if test="videoUrl != null" >
+        video_url,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+      <if test="questionAnswer != null" >
+        question_answer,
+      </if>
+      <if test="questionAnswerOptionId != null" >
+        question_answer_option_id,
+      </if>
+      <if test="answerKeys != null" >
+        answer_keys,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="questionBankId != null" >
+        #{questionBankId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="questionType != null" >
+        #{questionType,jdbcType=INTEGER},
+      </if>
+      <if test="detailType != null" >
+        #{detailType,jdbcType=INTEGER},
+      </if>
+      <if test="answerNumber != null" >
+        #{answerNumber,jdbcType=INTEGER},
+      </if>
+      <if test="videoUrl != null" >
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="questionAnswer != null" >
+        #{questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="questionAnswerOptionId != null" >
+        #{questionAnswerOptionId,jdbcType=VARCHAR},
+      </if>
+      <if test="answerKeys != null" >
+        #{answerKeys,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aorun.answer.model.Question" >
+    update t_question
+    <set >
+      <if test="questionBankId != null" >
+        question_bank_id = #{questionBankId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="questionType != null" >
+        question_type = #{questionType,jdbcType=INTEGER},
+      </if>
+      <if test="detailType != null" >
+        detail_type = #{detailType,jdbcType=INTEGER},
+      </if>
+      <if test="answerNumber != null" >
+        answer_number = #{answerNumber,jdbcType=INTEGER},
+      </if>
+      <if test="videoUrl != null" >
+        video_url = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=CHAR},
+      </if>
+      <if test="questionAnswer != null" >
+        question_answer = #{questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="questionAnswerOptionId != null" >
+        question_answer_option_id = #{questionAnswerOptionId,jdbcType=VARCHAR},
+      </if>
+      <if test="answerKeys != null" >
+        answer_keys = #{answerKeys,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.aorun.answer.model.Question" >
+    update t_question
+    set question_bank_id = #{questionBankId,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      question_type = #{questionType,jdbcType=INTEGER},
+      detail_type = #{detailType,jdbcType=INTEGER},
+      answer_number = #{answerNumber,jdbcType=INTEGER},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=CHAR},
+      question_answer = #{questionAnswer,jdbcType=VARCHAR},
+      question_answer_option_id = #{questionAnswerOptionId,jdbcType=VARCHAR},
+      answer_keys = #{answerKeys,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aorun.answer.model.Question" >
+    update t_question
+    set question_bank_id = #{questionBankId,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      question_type = #{questionType,jdbcType=INTEGER},
+      detail_type = #{detailType,jdbcType=INTEGER},
+      answer_number = #{answerNumber,jdbcType=INTEGER},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      is_delete = #{isDelete,jdbcType=CHAR},
+      question_answer = #{questionAnswer,jdbcType=VARCHAR},
+      question_answer_option_id = #{questionAnswerOptionId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aorun.answer.dao.QuestionBankMapper" >
+  <resultMap id="BaseResultMap" type="com.aorun.answer.model.QuestionBank" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="bank_type" property="bankType" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="epoint" property="epoint" jdbcType="INTEGER" />
+    <result column="is_delete" property="isDelete" jdbcType="CHAR" />
+    <result column="limit_time" property="limitTime" jdbcType="INTEGER" />
+    <result column="limit_num" property="limitNum" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, bank_type, create_time, start_time, end_time, epoint, is_delete, limit_time, 
+    limit_num,status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectByMap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank
+    where bank_type = #{bankType} and is_delete = 'n' and status = 1
+    <if test="startTime != null" >
+    <![CDATA[
+      and start_time>=#{startTime}
+    ]]>
+    </if>
+    <if test="endTime != null" >
+      <![CDATA[
+      and start_time<=#{endTime}
+    ]]>
+    </if>
+    order by start_time desc,create_time desc
+    <if test="limit != null and limit != ''" >
+      LIMIT
+      <if test="start != null and start != ''">
+        #{start},
+      </if>
+      #{limit}
+    </if>
+  </select>
+
+</mapper>
