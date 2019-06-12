@@ -40,7 +40,7 @@
   <!--<select id="getMaxStarByBankId" resultType="java.lang.Integer" >-->
     <!--select-->
     <!--<![CDATA[-->
-         <!--IFNULL(MAX(star),0)-->
+         <!--IFNULL(MAX(star),-1)-->
       <!--]]>-->
     <!--from t_question_bank_record-->
     <!--where worker_id = #{workerId} and question_bank_id = #{questionBankId}-->
@@ -59,7 +59,7 @@
   <select id="getMaxStarByMap" resultType="java.lang.Integer" >
     select
     <![CDATA[
-         IFNULL(MAX(star),0)
+         IFNULL(MAX(star),-1)
       ]]>
     from t_question_bank_record
     <where>
@@ -99,6 +99,14 @@
     <include refid="Base_Column_List" />
     from t_question_bank_record
     where worker_id = #{workerId} and question_bank_type = #{questionBankType}
+    order by create_time desc
+  </select>
+
+  <select id="getQuestionBankRecordByWorker" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank_record
+    where worker_id = #{workerId}
     order by create_time desc
   </select>
 

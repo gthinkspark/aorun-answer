@@ -21,5 +21,7 @@ public interface QuestionBankRecordMapper {
 
     List<QuestionBankRecord> getQuestionBankRecord(@Param("workerId") long workerId,@Param(value = "questionBankType")int questionBankType);
 
+    List<QuestionBankRecord> getQuestionBankRecordByWorker(@Param("workerId") long workerId);
+
     QuestionBankRecord getRecordLastStar(@Param("workerId") long workerId,@Param(value = "questionBankId")long questionBankId,@Param("star")int star);
 }

@@ -84,18 +84,18 @@ public class QuestionBankController {
                 dataMap.put("isAnswer","n");
                 dataMap.put("star",0);
                 int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(workerMember.getId(), questionBank.getId());
-                if(maxStarByBankId>0){
+                if(maxStarByBankId>=0){
                     dataMap.put("isAnswer","y");
                     dataMap.put("star",maxStarByBankId);
                 }
                 dataList.add(dataMap);
             }
-            List<QuestionBankRecord> questionBankRecordList = questionBankRecordService.getQuestionBankRecord(workerMember.getId(), QuestionConstant.QUESTION_BANKTYPE_WEEK);
+            List<QuestionBankRecord> questionBankRecordList = questionBankRecordService.getQuestionBankRecordByWorker(workerMember.getId());
             int sumEpoint=0;
             for(QuestionBankRecord bankRecord:questionBankRecordList){
                 sumEpoint+=bankRecord.getEpoint();
             }
-            resultMap.put("todayStar",questionBankRecordService.getToDayMaxStarByType(workerMember.getId(),QuestionConstant.QUESTION_BANKTYPE_WEEK));
+            resultMap.put("todayStar",questionBankRecordService.getToDayMaxStarByType(workerMember.getId()));
             resultMap.put("answerCount",questionBankRecordList.size());
             resultMap.put("sumEpoint",sumEpoint);
             resultMap.put("questionBankList",dataList);
@@ -170,7 +170,7 @@ public class QuestionBankController {
                     dataMap.put("isAnswer","n");
                     dataMap.put("star",0);
                     int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(workerMember.getId(), questionBank.getId());
-                    if(maxStarByBankId>0){
+                    if(maxStarByBankId>=0){
                         dataMap.put("isAnswer","y");
                         dataMap.put("star",maxStarByBankId);
                     }
@@ -238,7 +238,7 @@ public class QuestionBankController {
                 dataMap.put("isAnswer","n");
                 dataMap.put("star",0);
                 int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(workerMember.getId(), questionBank.getId());
-                if(maxStarByBankId>0){
+                if(maxStarByBankId>=0){
                     dataMap.put("isAnswer","y");
                     dataMap.put("star",maxStarByBankId);
                     QuestionBankRecord recordLastStar = questionBankRecordService.getRecordLastStar(workerMember.getId(), questionBank.getId(), maxStarByBankId);

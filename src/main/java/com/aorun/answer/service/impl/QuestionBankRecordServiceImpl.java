@@ -34,10 +34,9 @@ public class QuestionBankRecordServiceImpl implements QuestionBankRecordService 
     }
 
     @Override
-    public int getToDayMaxStarByType(long workerId, int questionBankType) {
+    public int getToDayMaxStarByType(long workerId) {
         Map<String,Object> params = new HashMap<>();
         params.put("workerId",workerId);
-        params.put("questionBankType",questionBankType);
         Date now = new Date();
         Date startOfDay = DateFormat.getStartTimeOfDay(now);
         Date endOfDay = DateFormat.getEndTimeOfDay(now);
@@ -63,6 +62,11 @@ public class QuestionBankRecordServiceImpl implements QuestionBankRecordService 
     @Override
     public List<QuestionBankRecord> getQuestionBankRecord(long workerId,int questionBankType) {
         return questionBankRecordMapper.getQuestionBankRecord(workerId,questionBankType);
+    }
+
+    @Override
+    public List<QuestionBankRecord> getQuestionBankRecordByWorker(long workerId) {
+        return questionBankRecordMapper.getQuestionBankRecordByWorker(workerId);
     }
 
     @Override
