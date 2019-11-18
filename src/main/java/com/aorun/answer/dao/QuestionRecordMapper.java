@@ -3,8 +3,6 @@ package com.aorun.answer.dao;
 import com.aorun.answer.model.QuestionRecord;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-
 public interface QuestionRecordMapper {
     int deleteByPrimaryKey(Long id);
 

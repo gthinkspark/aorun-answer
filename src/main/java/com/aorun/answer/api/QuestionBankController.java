@@ -1,4 +1,4 @@
-package com.aorun.answer.controller;
+package com.aorun.answer.api;
 
 import com.aorun.answer.dto.UserDto;
 import com.aorun.answer.dto.WorkerMember;
@@ -8,13 +8,11 @@ import com.aorun.answer.service.QuestionBankRecordService;
 import com.aorun.answer.service.QuestionBankService;
 import com.aorun.answer.util.CheckObjectIsNull;
 import com.aorun.answer.util.DateFormat;
-import com.aorun.answer.util.PageConstant;
-import com.aorun.answer.util.biz.QuestionConstant;
+import com.aorun.answer.util.QuestionConstant;
 import com.aorun.answer.util.biz.UnionUtil;
-import com.aorun.answer.util.cache.redis.CheckIsEmpty;
-import com.aorun.answer.util.cache.redis.RedisCache;
-import com.aorun.answer.util.jsonp.Jsonp;
-import com.aorun.answer.util.jsonp.Jsonp_data;
+import com.aorun.common.util.RedisUtil;
+import com.aorun.common.util.jsonp.Jsonp;
+import com.aorun.common.util.jsonp.Jsonp_data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -38,6 +36,8 @@ public class QuestionBankController {
     private QuestionBankService questionBankService;
     @Autowired
     private QuestionBankRecordService questionBankRecordService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     /**
      * 每周一答首页
@@ -51,11 +51,11 @@ public class QuestionBankController {
             UserDto user = null;
             WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) RedisCache.get(sid);
+                user = (UserDto) redisUtil.getObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = RedisCache.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
                 if (CheckObjectIsNull.isNull(workerMember)) {
                     return Jsonp.noLoginError("授权已过期,重新授权");
                 }
@@ -123,11 +123,11 @@ public class QuestionBankController {
             UserDto user = null;
             WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) RedisCache.get(sid);
+                user = (UserDto) redisUtil.get(sid);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = RedisCache.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
                 if (CheckObjectIsNull.isNull(workerMember)) {
                     return Jsonp.noLoginError("授权已过期,重新授权");
                 }
@@ -213,11 +213,11 @@ public class QuestionBankController {
             UserDto user = null;
             WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) RedisCache.get(sid);
+                user = (UserDto) redisUtil.get(sid);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = RedisCache.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
                 if (CheckObjectIsNull.isNull(workerMember)) {
                     return Jsonp.noLoginError("授权已过期,重新授权");
                 }

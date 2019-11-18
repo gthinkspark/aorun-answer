@@ -1,15 +1,13 @@
 package com.aorun.answer.dao;
 
 import com.aorun.answer.model.QuestionBank;
-import org.apache.ibatis.annotations.Param;
+import com.aorun.common.base.BaseMapper;
 
 import java.util.List;
 import java.util.Map;
 
-public interface QuestionBankMapper {
+public interface QuestionBankMapper extends BaseMapper<QuestionBank> {
     QuestionBank selectByPrimaryKey(Long id);
 
     List<QuestionBank> selectByMap(Map<String,Object> params);
-
-//    List<QuestionBank> selectByTypeMonth(@Param("type") Integer type,@Param("month") Integer month);
 }

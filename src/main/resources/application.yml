@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: aorun-answer
+  profiles:
+    active: dev
+  cloud:
+    config:
+      name: common,mysql,redis,config-test
+      profile: ${spring.profiles.active}
+      label: master
+
+
+server:
+  port: 8877
+  servlet:
+    context-path: /aorun-answer
+
+

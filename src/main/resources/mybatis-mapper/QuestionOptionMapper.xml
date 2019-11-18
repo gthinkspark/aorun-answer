@@ -12,35 +12,92 @@
   <sql id="Base_Column_List" >
     id, question_id, number, content, create_time, is_delete
   </sql>
+  <!-- table -->
+  <sql id="Base_Table" >
+  	from t_question_option
+</sql>
+  <!-- group and order -->
+  <sql id="Base_Other_ParamString" >
+    <if test="groupParamString != null and groupParamString != ''" >
+      group by
+      ${groupParamString}
+    </if>
+    <if test="sortParamString != null and sortParamString != ''" >
+      order by
+      ${sortParamString}
+    </if>
+    <if test="limit != null and limit != ''" >
+      LIMIT
+      <if test="start != null and start != ''">
+        #{start},
+      </if>
+      #{limit}
+    </if>
+  </sql>
+  <!-- Base_Column_Where_Param -->
+  <sql id="Base_Column_Where_Param" >
+    <if test="questionId != null" >
+      and question_id = #{questionId,jdbcType=BIGINT}
+    </if>
+    <if test="number != null" >
+      and number = #{number,jdbcType=INTEGER}
+    </if>
+    <if test="content != null" >
+      and content = #{content,jdbcType=VARCHAR}
+    </if>
+    <if test="createTime != null" >
+      and create_time = #{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="isDelete != null" >
+      and is_delete = #{isDelete,jdbcType=CHAR}
+    </if>
+  </sql>
+  <!-- Batch_Where_Param -->
+  <sql id="Batch_Where_Param">
+    <if test="ids != null" >
+      and id in (${ids})
+    </if>
+  </sql>
+
+  <!-- where -->
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+    </where>
+    <include refid="Base_Other_ParamString" />
+  </select>
+  <!-- count -->
+  <select id="getTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(1)
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+    </where>
+  </select>
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_question_option
     where id = #{id,jdbcType=BIGINT}
   </select>
-
-  <select id="selectByQuestionId" resultMap="BaseResultMap" >
-    select
-    <include refid="Base_Column_List" />
-    from t_question_option
-    where
-    is_delete='n' and question_id = #{questionId}
-    order by number asc
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_question_option
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.aorun.answer.model.QuestionOption" >
-    insert into t_question_option (id, question_id, number, 
+  <insert id="insert" parameterType="com.aorun.answer.model.QuestionOption"  useGeneratedKeys="true" keyProperty="id">
+    insert into t_question_option (id, question_id, number,
       content, create_time, is_delete
       )
-    values (#{id,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT}, #{number,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT}, #{number,jdbcType=INTEGER},
       #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=CHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.aorun.answer.model.QuestionOption" >
+  <insert id="insertSelective" parameterType="com.aorun.answer.model.QuestionOption" useGeneratedKeys="true" keyProperty="id">
     insert into t_question_option
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

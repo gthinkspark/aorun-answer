@@ -3,6 +3,8 @@ package com.aorun.answer.service.impl;
 import com.aorun.answer.dao.QuestionBankMapper;
 import com.aorun.answer.model.QuestionBank;
 import com.aorun.answer.service.QuestionBankService;
+import com.aorun.common.base.BasePageServiceImpl;
+import com.aorun.common.util.ModuleConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +21,14 @@ import java.util.Map;
  *
  */
 @Service
-public class QuestionBankServiceImpl implements QuestionBankService {
+public class QuestionBankServiceImpl extends BasePageServiceImpl<QuestionBankMapper,QuestionBank> implements QuestionBankService {
     @Autowired
     private QuestionBankMapper questionBankMapper;
+
+    @Override
+    protected void initMapper() {
+        this.mapper = questionBankMapper;
+    }
 
     @Override
     public List<QuestionBank> getQuestionBankByType(int bankType, Date startTime, Date endTime) {
@@ -29,6 +36,8 @@ public class QuestionBankServiceImpl implements QuestionBankService {
         params.put("bankType",bankType);
         params.put("startTime",startTime);
         params.put("endTime",endTime);
+        params.put("isDelete", ModuleConstant.ENUM_N);
+        params.put("status", 1);
         return questionBankMapper.selectByMap(params);
     }
 
@@ -42,6 +51,8 @@ public class QuestionBankServiceImpl implements QuestionBankService {
         params.put("bankType",bankType);
         params.put("start",start);
         params.put("limit",limit);
+        params.put("isDelete", ModuleConstant.ENUM_N);
+        params.put("status", 1);
         return questionBankMapper.selectByMap(params);
     }
 

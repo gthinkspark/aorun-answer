@@ -1,4 +1,4 @@
-package com.aorun.answer.util.biz;
+package com.aorun.answer.util;
 
 /**
  * @ClassName: QuestionConstant

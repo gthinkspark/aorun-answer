@@ -25,13 +25,108 @@
   <sql id="Blob_Column_List" >
     answer_keys
   </sql>
-  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
-    select 
+
+  <!-- table -->
+  <sql id="Base_Table" >
+  	from t_question
+</sql>
+  <!-- group and order -->
+  <sql id="Base_Other_ParamString" >
+    <if test="groupParamString != null and groupParamString != ''" >
+      group by
+      ${groupParamString}
+    </if>
+    <if test="sortParamString != null and sortParamString != ''" >
+      order by
+      ${sortParamString}
+    </if>
+    <if test="limit != null and limit != ''" >
+      LIMIT
+      <if test="start != null and start != ''">
+        #{start},
+      </if>
+      #{limit}
+    </if>
+  </sql>
+  <!-- Base_Column_Where_Param -->
+  <sql id="Base_Column_Where_Param" >
+    <if test="questionBankId != null" >
+      and question_bank_id = #{questionBankId,jdbcType=BIGINT}
+    </if>
+    <if test="title != null" >
+      and title = #{title,jdbcType=VARCHAR}
+    </if>
+    <if test="source != null" >
+      and source = #{source,jdbcType=VARCHAR}
+    </if>
+    <if test="questionType != null" >
+      and question_type = #{questionType,jdbcType=INTEGER}
+    </if>
+    <if test="detailType != null" >
+      and detail_type = #{detailType,jdbcType=INTEGER}
+    </if>
+    <if test="answerNumber != null" >
+      and answer_number = #{answerNumber,jdbcType=INTEGER}
+    </if>
+    <if test="videoUrl != null" >
+      and video_url = #{videoUrl,jdbcType=VARCHAR}
+    </if>
+    <if test="createTime != null" >
+      and create_time = #{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="isDelete != null" >
+      and is_delete = #{isDelete,jdbcType=CHAR}
+    </if>
+    <if test="questionAnswer != null" >
+      and question_answer = #{questionAnswer,jdbcType=VARCHAR}
+    </if>
+    <if test="questionAnswerOptionId != null" >
+      and question_answer_option_id = #{questionAnswerOptionId,jdbcType=VARCHAR}
+    </if>
+    <if test="answerKeys != null" >
+      and answer_keys = #{answerKeys,jdbcType=LONGVARCHAR}
+    </if>
+  </sql>
+  <!-- Batch_Where_Param -->
+  <sql id="Batch_Where_Param">
+    <if test="idList != null" >
+      and id in
+      <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="classGroupList != null" >
+      and class_group in
+      <foreach item="item" index="index" collection="classGroupList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </sql>
+  <!-- Filtrate_Where_Param 筛选过滤条件 -->
+  <sql id="Filtrate_Where_Param">
+  </sql>
+
+  <!-- where -->
+  <select id="selectByMap" resultMap="ResultMapWithBLOBs" parameterType="java.util.Map" >
+    select
     <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from t_question
-    where id = #{id,jdbcType=BIGINT}
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+      <include refid="Batch_Where_Param" />
+      <include refid="Filtrate_Where_Param" />
+    </where>
+    <include refid="Base_Other_ParamString" />
+  </select>
+  <!-- count -->
+  <select id="getTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(1)
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+      <include refid="Batch_Where_Param" />
+      <include refid="Filtrate_Where_Param" />
+    </where>
   </select>
 
 
@@ -45,6 +140,15 @@
   </select>
 
 
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_question
+    where id = #{id,jdbcType=BIGINT}
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_question

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.aorun.answer.dao.QuestionBankMapper" >
+  <resultMap id="BaseResultMap" type="com.aorun.answer.model.QuestionBank" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="bank_type" property="bankType" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="epoint" property="epoint" jdbcType="INTEGER" />
+    <result column="is_delete" property="isDelete" jdbcType="CHAR" />
+    <result column="limit_time" property="limitTime" jdbcType="INTEGER" />
+    <result column="limit_num" property="limitNum" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, bank_type, create_time, start_time, end_time, epoint, is_delete, limit_time, 
+    limit_num,status
+  </sql>
+  <!-- table -->
+  <sql id="Base_Table" >
+  	from t_question_bank
+</sql>
+  <!-- group and order -->
+  <sql id="Base_Other_ParamString" >
+    <if test="groupParamString != null and groupParamString != ''" >
+      group by
+      ${groupParamString}
+    </if>
+    order by start_time desc,create_time desc
+    <if test="sortParamString != null and sortParamString != ''" >
+      ,${sortParamString}
+    </if>
+    <if test="limit != null and limit != ''" >
+      LIMIT
+      <if test="start != null and start != ''">
+        #{start},
+      </if>
+      #{limit}
+    </if>
+  </sql>
+  <!-- Base_Column_Where_Param -->
+  <sql id="Base_Column_Where_Param" >
+    <if test="title != null" >
+      and title = #{title,jdbcType=VARCHAR}
+    </if>
+    <if test="bankType != null" >
+      and bank_type = #{bankType,jdbcType=INTEGER}
+    </if>
+    <if test="isDelete != null" >
+      and is_delete = #{isDelete,jdbcType=CHAR}
+    </if>
+  </sql>
+  <!-- Batch_Where_Param -->
+  <sql id="Batch_Where_Param">
+    <if test="idList != null" >
+      and id in
+      <foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+    <if test="classGroupList != null" >
+      and class_group in
+      <foreach item="item" index="index" collection="classGroupList" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </if>
+  </sql>
+  <!-- Filtrate_Where_Param 筛选过滤条件 -->
+  <sql id="Filtrate_Where_Param">
+    <if test="startTime != null" >
+      <![CDATA[
+      and start_time>=#{startTime}
+    ]]>
+    </if>
+    <if test="endTime != null" >
+      <![CDATA[
+      and start_time<=#{endTime}
+    ]]>
+    </if>
+  </sql>
+
+  <!-- where -->
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+      <include refid="Batch_Where_Param" />
+      <include refid="Filtrate_Where_Param" />
+    </where>
+    <include refid="Base_Other_ParamString" />
+  </select>
+  <!-- count -->
+  <select id="getTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(1)
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+      <include refid="Batch_Where_Param" />
+      <include refid="Filtrate_Where_Param" />
+    </where>
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select
+    <include refid="Base_Column_List" />
+    from t_question_bank
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <!--<select id="selectByMap" resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from t_question_bank-->
+    <!--where bank_type = #{bankType} and is_delete = 'n' and status = 1-->
+
+  <!--</select>-->
+
+</mapper>
