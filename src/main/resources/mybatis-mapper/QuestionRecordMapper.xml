@@ -15,32 +15,226 @@
     id, question_bank_record_id, question_id, answer, is_right, create_time, worker_id,
     question_bank_id
   </sql>
+
+  <!-- table -->
+  <sql id="Base_Table" >
+  	from t_question_record
+</sql>
+  <!-- group and order -->
+  <sql id="Base_Other_ParamString" >
+    <if test="groupParamString != null and groupParamString != ''" >
+      group by
+      ${groupParamString}
+    </if>
+    <if test="sortParamString != null and sortParamString != ''" >
+      order by
+      ${sortParamString}
+    </if>
+    <if test="limit != null and limit != ''" >
+      LIMIT
+      <if test="start != null and start != ''">
+        #{start},
+      </if>
+      #{limit}
+    </if>
+  </sql>
+  <!-- Base_Column_Where_Param -->
+  <sql id="Base_Column_Where_Param" >
+    <if test="questionBankRecordId != null" >
+      and question_bank_record_id = #{questionBankRecordId,jdbcType=BIGINT}
+    </if>
+    <if test="questionId != null" >
+      and question_id = #{questionId,jdbcType=BIGINT}
+    </if>
+    <if test="answer != null" >
+      and answer = #{answer,jdbcType=VARCHAR}
+    </if>
+    <if test="isRight != null" >
+      and is_right = #{isRight,jdbcType=CHAR}
+    </if>
+    <if test="createTime != null" >
+      and create_time = #{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="workerId != null" >
+      and worker_id = #{workerId,jdbcType=BIGINT}
+    </if>
+    <if test="questionBankId != null" >
+      and question_bank_id = #{questionBankId,jdbcType=BIGINT}
+    </if>
+  </sql>
+  <!-- Batch_Where_Param -->
+  <sql id="Batch_Where_Param">
+    <if test="ids != null" >
+      and id in (${ids})
+    </if>
+    <if test="startTime != null" >
+      <![CDATA[
+      and create_time>=#{startTime}
+    ]]>
+    </if>
+    <if test="endTime != null" >
+      <![CDATA[
+     and create_time<#{endTime}
+   ]]>
+    </if>
+  </sql>
+
+  <!-- where -->
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+      <include refid="Batch_Where_Param" />
+    </where>
+    <include refid="Base_Other_ParamString" />
+  </select>
+  <!-- count -->
+  <select id="getTotal" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(1)
+    <include refid="Base_Table" />
+    <where>
+      <include refid="Base_Column_Where_Param" />
+      <include refid="Batch_Where_Param" />
+    </where>
+  </select>
+
+  <!-- count -->
+  <select id="getTotalDisWorkerTab" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(1) from
+    (
+    select DISTINCT(worker_id)
+    <include refid="Base_Table"/>
+    <where>
+      <include refid="Base_Column_Where_Param"/>
+      <include refid="Batch_Where_Param"/>
+    </where>
+    ) as question_dis_tab
+  </select>
+
+
+
+
+  <!--<select id="selectByWorkerQuestionid" resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--<include refid="Base_Column_List" />-->
+    <!--from t_question_record-->
+    <!--where worker_id = #{workerId} and question_id = #{questionId} and question_bank_record_id = #{questionBankRecordId}-->
+    <!--order by create_time desc-->
+    <!--limit 1-->
+  <!--</select>-->
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_question_record
     where id = #{id,jdbcType=BIGINT}
   </select>
-
-  <select id="selectByWorkerQuestionid" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_question_record
-    where worker_id = #{workerId} and question_id = #{questionId} and question_bank_record_id = #{questionBankRecordId}
-    order by create_time desc
-    limit 1
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from t_question_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.aorun.answer.model.QuestionRecord" useGeneratedKeys="true" keyProperty="id">
-    insert into t_question_record (question_bank_record_id, question_id,
+  <insert id="insert" parameterType="com.aorun.answer.model.QuestionRecord" >
+    insert into t_question_record (id, question_bank_record_id, question_id,
       answer, is_right, create_time,
       worker_id, question_bank_id)
-    values (#{questionBankRecordId,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT},
+    values (#{id,jdbcType=BIGINT}, #{questionBankRecordId,jdbcType=BIGINT}, #{questionId,jdbcType=BIGINT},
       #{answer,jdbcType=VARCHAR}, #{isRight,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{workerId,jdbcType=BIGINT}, #{questionBankId,jdbcType=BIGINT})
   </insert>
+  <insert id="insertSelective" parameterType="com.aorun.answer.model.QuestionRecord" >
+    insert into t_question_record
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="questionBankRecordId != null" >
+        question_bank_record_id,
+      </if>
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="answer != null" >
+        answer,
+      </if>
+      <if test="isRight != null" >
+        is_right,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="workerId != null" >
+        worker_id,
+      </if>
+      <if test="questionBankId != null" >
+        question_bank_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="questionBankRecordId != null" >
+        #{questionBankRecordId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null" >
+        #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="isRight != null" >
+        #{isRight,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="workerId != null" >
+        #{workerId,jdbcType=BIGINT},
+      </if>
+      <if test="questionBankId != null" >
+        #{questionBankId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aorun.answer.model.QuestionRecord" >
+    update t_question_record
+    <set >
+      <if test="questionBankRecordId != null" >
+        question_bank_record_id = #{questionBankRecordId,jdbcType=BIGINT},
+      </if>
+      <if test="questionId != null" >
+        question_id = #{questionId,jdbcType=BIGINT},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="isRight != null" >
+        is_right = #{isRight,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="workerId != null" >
+        worker_id = #{workerId,jdbcType=BIGINT},
+      </if>
+      <if test="questionBankId != null" >
+        question_bank_id = #{questionBankId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aorun.answer.model.QuestionRecord" >
+    update t_question_record
+    set question_bank_record_id = #{questionBankRecordId,jdbcType=BIGINT},
+      question_id = #{questionId,jdbcType=BIGINT},
+      answer = #{answer,jdbcType=VARCHAR},
+      is_right = #{isRight,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      worker_id = #{workerId,jdbcType=BIGINT},
+      question_bank_id = #{questionBankId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>

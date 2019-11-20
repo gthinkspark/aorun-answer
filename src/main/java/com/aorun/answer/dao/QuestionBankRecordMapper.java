@@ -1,19 +1,13 @@
 package com.aorun.answer.dao;
 
 import com.aorun.answer.model.QuestionBankRecord;
+import com.aorun.common.base.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
-public interface QuestionBankRecordMapper {
-    QuestionBankRecord selectByPrimaryKey(Long id);
-
-//    int getToDayMaxStarByType(@Param("workerId") long workerId,@Param("questionBankType") int questionBankType);
-//
-//    int getMaxStarByBankId(@Param("workerId") long workerId,@Param("questionBankId") Long questionBankId);
-
-    int insert(QuestionBankRecord record);
+public interface QuestionBankRecordMapper extends BaseMapper<QuestionBankRecord> {
 
     int getMaxStarByMap(Map<String,Object> params);
 

@@ -1,11 +1,10 @@
 package com.aorun.answer.api;
 
 import com.aorun.answer.dto.UserDto;
-import com.aorun.answer.dto.WorkerMember;
 import com.aorun.answer.model.QuestionBankRecord;
 import com.aorun.answer.service.QuestionBankRecordService;
 import com.aorun.answer.util.CheckObjectIsNull;
-import com.aorun.answer.util.biz.UnionUtil;
+import com.aorun.common.base.BasePagination;
 import com.aorun.common.util.RedisUtil;
 import com.aorun.common.util.jsonp.Jsonp;
 import com.aorun.common.util.jsonp.Jsonp_data;
@@ -50,21 +49,28 @@ public class QuestionBankRecordController {
                                 @RequestParam(name="pageSize", defaultValue = "20") Integer pageSize){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
                 user = (UserDto) redisUtil.get(sid);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
             Map<String,Object> resultMap = new HashMap<>();
-            List<QuestionBankRecord> questionBankRecordList = questionBankRecordService.getQuestionBankRecordByPage(workerMember.getId(),pageIndex,pageSize);
+
+            BasePagination<QuestionBankRecord> page = new BasePagination<>();
+            Map<String,Object> params = new HashMap<>();
+            params.put("workerId",user.getMemberId());
+            page.setCurrentPage(pageIndex);
+            page.setLimit(pageSize);
+            page.setSortString("create_time desc");
+            List<QuestionBankRecord> questionBankRecordList = questionBankRecordService.findByPage(page).getResult();
             List<Map<String,Object>> questionBankRecordMapList = new ArrayList<>();
             for(QuestionBankRecord questionBankRecord:questionBankRecordList){
                 Map<String,Object> dataMap = new HashMap<>();

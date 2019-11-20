@@ -140,14 +140,14 @@ public class QuestionController {
             calendar.setTime(new Date());
             questionBankRecord.setCreateTime(calendar.getTime());
             questionBankRecord.setMonth(calendar.get(Calendar.MONTH)+1);
-            questionBankRecordService.insert(questionBankRecord);
+            questionBankRecordService.add(questionBankRecord);
             List<QuestionRecord> questionRecordList = questionResultDto.getQuestionRecordList();
             for(QuestionRecord questionRecord:questionRecordList){
                 questionRecord.setQuestionBankRecordId(questionBankRecord.getId());
                 questionRecord.setCreateTime(new Date());
                 questionRecord.setWorkerId(workerMember.getId());
                 questionRecord.setQuestionBankId(questionResultDto.getQuestionBankId());
-                questionRecordService.insert(questionRecord);
+                questionRecordService.add(questionRecord);
             }
 //            if(questionBankRecord.getEpoint()>0){
 //                //积分消息
@@ -200,7 +200,7 @@ public class QuestionController {
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
-            QuestionBankRecord questionBankRecordById = questionBankRecordService.getQuestionBankRecordById(questionBankRecordId);
+            QuestionBankRecord questionBankRecordById = questionBankRecordService.findById(questionBankRecordId);
             if(null==questionBankRecordById||questionBankRecordById.getWorkerId()!=workerMember.getId()){
                 return Jsonp.paramError("答题记录不存在");
             }
@@ -253,7 +253,7 @@ public class QuestionController {
             QuestionBank questionBankById = questionBankService.getQuestionBankById(questionBankId);
             resultMap.put("questionBankTitle",questionBankById.getTitle());
             //总共时间
-            QuestionBankRecord questionBankRecordById = questionBankRecordService.getQuestionBankRecordById(questionBankRecordId);
+            QuestionBankRecord questionBankRecordById = questionBankRecordService.findById(questionBankRecordId);
             resultMap.put("toatleTime",questionBankRecordById.getTotalTime());
             //查询这个题目库的题目
             List<Question> questionList = questionService.selectByBankId(questionBankId);

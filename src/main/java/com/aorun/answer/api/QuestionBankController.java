@@ -49,16 +49,16 @@ public class QuestionBankController {
     public Object questionHome( @RequestParam(name = "sid", required = true) String sid){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
                 user = (UserDto) redisUtil.getObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
@@ -83,19 +83,19 @@ public class QuestionBankController {
                 dataMap.put("id",questionBank.getId());
                 dataMap.put("isAnswer","n");
                 dataMap.put("star",0);
-                int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(workerMember.getId(), questionBank.getId());
+                int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(user.getMemberId(), questionBank.getId());
                 if(maxStarByBankId>=0){
                     dataMap.put("isAnswer","y");
                     dataMap.put("star",maxStarByBankId);
                 }
                 dataList.add(dataMap);
             }
-            List<QuestionBankRecord> questionBankRecordList = questionBankRecordService.getQuestionBankRecordByWorker(workerMember.getId());
+            List<QuestionBankRecord> questionBankRecordList = questionBankRecordService.getQuestionBankRecordByWorker(user.getMemberId());
             int sumEpoint=0;
             for(QuestionBankRecord bankRecord:questionBankRecordList){
                 sumEpoint+=bankRecord.getEpoint();
             }
-            resultMap.put("todayStar",questionBankRecordService.getToDayMaxStarByType(workerMember.getId()));
+            resultMap.put("todayStar",questionBankRecordService.getToDayMaxStarByType(user.getMemberId()));
             resultMap.put("answerCount",questionBankRecordList.size());
             resultMap.put("sumEpoint",sumEpoint);
             resultMap.put("questionBankList",dataList);

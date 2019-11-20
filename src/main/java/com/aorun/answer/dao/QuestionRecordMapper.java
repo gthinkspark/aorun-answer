@@ -1,20 +1,12 @@
 package com.aorun.answer.dao;
 
 import com.aorun.answer.model.QuestionRecord;
-import org.apache.ibatis.annotations.Param;
+import com.aorun.common.base.BaseMapper;
 
-public interface QuestionRecordMapper {
-    int deleteByPrimaryKey(Long id);
+import java.util.Map;
 
-    int insert(QuestionRecord record);
+public interface QuestionRecordMapper extends BaseMapper<QuestionRecord> {
+    int getTotalDisWorkerTab(Map<String, Object> map);
 
-    int insertSelective(QuestionRecord record);
-
-    QuestionRecord selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(QuestionRecord record);
-
-    int updateByPrimaryKey(QuestionRecord record);
-
-    QuestionRecord selectByWorkerQuestionid(@Param("workerId") Long workerId, @Param("questionId") Long questionId,@Param("questionBankRecordId")Long questionBankRecordId);
+//    QuestionRecord selectByWorkerQuestionid(@Param("workerId") Long workerId, @Param("questionId") Long questionId,@Param("questionBankRecordId")Long questionBankRecordId);
 }
