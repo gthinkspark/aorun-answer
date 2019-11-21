@@ -1,4 +1,4 @@
-package com.aorun.answer.screen;
+package com.aorun.answer.cockpit;
 
 import com.aorun.answer.model.Question;
 import com.aorun.answer.model.QuestionBank;
@@ -27,8 +27,8 @@ import java.util.*;
  */
 @RestController
 @ApiVersion(1)
-@RequestMapping("{version}/screen/question")
-public class ScrQuestionService {
+@RequestMapping("cockpit/{version}/question")
+public class CocQuestionService {
     @Autowired
     private QuestionService questionService;
     @Autowired

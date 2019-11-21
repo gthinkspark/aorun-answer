@@ -1,4 +1,4 @@
-package com.aorun.answer.api;
+package com.aorun.answer.app;
 
 import com.aorun.answer.dto.UserDto;
 import com.aorun.answer.dto.WorkerMember;
@@ -10,6 +10,7 @@ import com.aorun.answer.util.CheckObjectIsNull;
 import com.aorun.answer.util.DateFormat;
 import com.aorun.answer.util.QuestionConstant;
 import com.aorun.answer.util.biz.UnionUtil;
+import com.aorun.common.annotation.ApiVersion;
 import com.aorun.common.util.RedisUtil;
 import com.aorun.common.util.jsonp.Jsonp;
 import com.aorun.common.util.jsonp.Jsonp_data;
@@ -30,7 +31,8 @@ import java.util.*;
  * @date: 2019/5/7 16:32
  */
 @Controller
-@RequestMapping("/questionBank")
+@ApiVersion(1)
+@RequestMapping("app/{version}/questionBank")
 public class QuestionBankController {
     @Autowired
     private QuestionBankService questionBankService;

@@ -1,9 +1,10 @@
-package com.aorun.answer.api;
+package com.aorun.answer.app;
 
 import com.aorun.answer.dto.UserDto;
 import com.aorun.answer.model.QuestionBankRecord;
 import com.aorun.answer.service.QuestionBankRecordService;
 import com.aorun.answer.util.CheckObjectIsNull;
+import com.aorun.common.annotation.ApiVersion;
 import com.aorun.common.base.BasePagination;
 import com.aorun.common.util.RedisUtil;
 import com.aorun.common.util.jsonp.Jsonp;
@@ -28,7 +29,8 @@ import java.util.Map;
  * @date: 2019/5/9 15:58
  */
 @Controller
-@RequestMapping("questionBankRecord")
+@ApiVersion(1)
+@RequestMapping("app/{version}/questionBankRecord")
 public class QuestionBankRecordController {
     @Autowired
     private QuestionBankRecordService questionBankRecordService;
