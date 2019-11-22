@@ -2,11 +2,9 @@ package com.aorun.answer.app;
 
 import com.aorun.answer.dto.QuestionResultDto;
 import com.aorun.answer.dto.UserDto;
-import com.aorun.answer.dto.WorkerMember;
 import com.aorun.answer.model.*;
 import com.aorun.answer.service.*;
 import com.aorun.answer.util.CheckObjectIsNull;
-import com.aorun.answer.util.biz.UnionUtil;
 import com.aorun.common.annotation.ApiVersion;
 import com.aorun.common.util.RedisUtil;
 import com.aorun.common.util.jsonp.Jsonp;
@@ -57,16 +55,16 @@ public class QuestionController {
             @RequestParam(value = "questionBankId",required = true)Long questionBankId){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
@@ -116,16 +114,16 @@ public class QuestionController {
             @RequestBody QuestionResultDto questionResultDto){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
@@ -137,7 +135,7 @@ public class QuestionController {
             questionBankRecord.setRightQuantities(questionResultDto.getRightQuantities());
             questionBankRecord.setStar(questionResultDto.getStar());
             questionBankRecord.setTotalTime(questionResultDto.getTotalTime());
-            questionBankRecord.setWorkerId(workerMember.getId());
+            questionBankRecord.setWorkerId(user.getMemberId());
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             questionBankRecord.setCreateTime(calendar.getTime());
@@ -147,7 +145,7 @@ public class QuestionController {
             for(QuestionRecord questionRecord:questionRecordList){
                 questionRecord.setQuestionBankRecordId(questionBankRecord.getId());
                 questionRecord.setCreateTime(new Date());
-                questionRecord.setWorkerId(workerMember.getId());
+                questionRecord.setWorkerId(user.getMemberId());
                 questionRecord.setQuestionBankId(questionResultDto.getQuestionBankId());
                 questionRecordService.add(questionRecord);
             }
@@ -189,21 +187,21 @@ public class QuestionController {
             @RequestParam(value = "questionBankRecordId",required = true)Long questionBankRecordId){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
             QuestionBankRecord questionBankRecordById = questionBankRecordService.findById(questionBankRecordId);
-            if(null==questionBankRecordById||questionBankRecordById.getWorkerId()!=workerMember.getId()){
+            if(null==questionBankRecordById||questionBankRecordById.getWorkerId()!=user.getMemberId()){
                 return Jsonp.paramError("答题记录不存在");
             }
             QuestionBank questionBankById = questionBankService.getQuestionBankById(questionBankRecordById.getQuestionBankId());
@@ -237,16 +235,16 @@ public class QuestionController {
             @RequestParam(value = "questionBankRecordId",required = true)Long questionBankRecordId){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
@@ -283,7 +281,7 @@ public class QuestionController {
                 //用户做答的答案
                 questionMap.put("wokerAnswerStr","");
                 questionMap.put("isRight","n");
-                QuestionRecord questionRecordByWorkerQuestionId = questionRecordService.getQuestionRecordByWorkerQuestionId(workerMember.getId(), question.getId(), questionBankRecordId);
+                QuestionRecord questionRecordByWorkerQuestionId = questionRecordService.getQuestionRecordByWorkerQuestionId(user.getMemberId(), question.getId(), questionBankRecordId);
                 if(null!=questionRecordByWorkerQuestionId){
                     questionMap.put("wokerAnswerStr",questionRecordByWorkerQuestionId.getAnswer());
                     questionMap.put("isRight",questionRecordByWorkerQuestionId.getIsRight());

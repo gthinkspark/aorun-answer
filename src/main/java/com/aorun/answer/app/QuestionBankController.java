@@ -1,7 +1,6 @@
 package com.aorun.answer.app;
 
 import com.aorun.answer.dto.UserDto;
-import com.aorun.answer.dto.WorkerMember;
 import com.aorun.answer.model.QuestionBank;
 import com.aorun.answer.model.QuestionBankRecord;
 import com.aorun.answer.service.QuestionBankRecordService;
@@ -9,7 +8,6 @@ import com.aorun.answer.service.QuestionBankService;
 import com.aorun.answer.util.CheckObjectIsNull;
 import com.aorun.answer.util.DateFormat;
 import com.aorun.answer.util.QuestionConstant;
-import com.aorun.answer.util.biz.UnionUtil;
 import com.aorun.common.annotation.ApiVersion;
 import com.aorun.common.util.RedisUtil;
 import com.aorun.common.util.jsonp.Jsonp;
@@ -53,11 +51,11 @@ public class QuestionBankController {
             UserDto user = null;
 //            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.getObj(sid,UserDto.class);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-//                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
 //                if (CheckObjectIsNull.isNull(workerMember)) {
 //                    return Jsonp.noLoginError("授权已过期,重新授权");
 //                }
@@ -123,16 +121,16 @@ public class QuestionBankController {
                                     @RequestParam(name="pageSize", defaultValue = "2") Integer pageSize){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
@@ -171,7 +169,7 @@ public class QuestionBankController {
                     dataMap.put("id",questionBank.getId());
                     dataMap.put("isAnswer","n");
                     dataMap.put("star",0);
-                    int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(workerMember.getId(), questionBank.getId());
+                    int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(user.getMemberId(), questionBank.getId());
                     if(maxStarByBankId>=0){
                         dataMap.put("isAnswer","y");
                         dataMap.put("star",maxStarByBankId);
@@ -213,16 +211,16 @@ public class QuestionBankController {
                                     @RequestParam(name="pageSize", defaultValue = "20") Integer pageSize){
         try {
             UserDto user = null;
-            WorkerMember workerMember = null;
+//            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
-                if (CheckObjectIsNull.isNull(workerMember)) {
-                    return Jsonp.noLoginError("授权已过期,重新授权");
-                }
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                if (CheckObjectIsNull.isNull(workerMember)) {
+//                    return Jsonp.noLoginError("授权已过期,重新授权");
+//                }
             } else {
                 return Jsonp.noLoginError("用户SID不正确,请核对后重试");
             }
@@ -239,11 +237,11 @@ public class QuestionBankController {
                 dataMap.put("endTime",questionBank.getEndTime().getTime());
                 dataMap.put("isAnswer","n");
                 dataMap.put("star",0);
-                int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(workerMember.getId(), questionBank.getId());
+                int maxStarByBankId = questionBankRecordService.getMaxStarByBankId(user.getMemberId(), questionBank.getId());
                 if(maxStarByBankId>=0){
                     dataMap.put("isAnswer","y");
                     dataMap.put("star",maxStarByBankId);
-                    QuestionBankRecord recordLastStar = questionBankRecordService.getRecordLastStar(workerMember.getId(), questionBank.getId(), maxStarByBankId);
+                    QuestionBankRecord recordLastStar = questionBankRecordService.getRecordLastStar(user.getMemberId(), questionBank.getId(), maxStarByBankId);
                     dataMap.put("questionBankRecordId",recordLastStar.getId());
                 }
                 questionBankExamMapList.add(dataMap);

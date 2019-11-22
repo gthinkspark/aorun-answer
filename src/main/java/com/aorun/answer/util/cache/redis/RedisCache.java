@@ -66,7 +66,7 @@
 //
 //
 //
-//	public static <T> T getObj(String key,Class<T> clacc){
+//	public static <T> T getStrObj(String key,Class<T> clacc){
 //		if (CheckIsEmpty.isEmpty(key)) {
 //			return null;
 //		}

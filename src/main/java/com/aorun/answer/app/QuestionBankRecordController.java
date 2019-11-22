@@ -53,11 +53,11 @@ public class QuestionBankRecordController {
             UserDto user = null;
 //            WorkerMember workerMember = null;
             if (!StringUtils.isEmpty(sid)) {
-                user = (UserDto) redisUtil.get(sid);
+                user = (UserDto) redisUtil.getStrObj(sid,UserDto.class);
                 if (CheckObjectIsNull.isNull(user)) {
                     return Jsonp.noLoginError("请先登录或重新登录");
                 }
-//                workerMember = redisUtil.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//                workerMember = redisUtil.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
 //                if (CheckObjectIsNull.isNull(workerMember)) {
 //                    return Jsonp.noLoginError("授权已过期,重新授权");
 //                }

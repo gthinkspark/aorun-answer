@@ -22,7 +22,7 @@
   <select id="getMaxStarByMap" resultType="java.lang.Integer" >
     select
     <![CDATA[
-         IFNULL(MAX(star),-1)
+         IFNULL(MAX(star),0)
       ]]>
     from t_question_bank_record
     <where>

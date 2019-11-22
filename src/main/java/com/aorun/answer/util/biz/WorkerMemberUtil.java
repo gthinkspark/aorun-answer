@@ -13,7 +13,7 @@
 //	public static Long getWorkerId(a
 //			String sid){
 //		UserDto user = (UserDto) RedisCache.get(sid);
-//		WorkerMember workerMember = RedisCache.getObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
+//		WorkerMember workerMember = RedisCache.getStrObj(UnionUtil.generateUnionSid(user),WorkerMember.class);
 //		return workerMember.getId();
 //	}
 //}
